@@ -1,0 +1,32 @@
+# Build output
+target/
+build/
+*.class
+*.log
+
+# IDEs
+.idea/
+*.iml
+.vscode/
+.settings/
+.project
+.classpath
+.factorypath
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets and local config
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Frontends and Python (added in later weeks)
+node_modules/
+dist/
+.angular/
+__pycache__/
+.venv/

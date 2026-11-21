@@ -1,0 +1,28 @@
+# Each path's owner is auto-requested for review on PRs that touch it.
+# Replace the two placeholders with your real GitHub usernames before pushing.
+#   PRINCE_GITHUB   -> Prince's username
+#   SUSHANT_GITHUB  -> Sushant's username
+# Later rules win, so the catch-all goes first.
+
+*                       @PRINCE_GITHUB @SUSHANT_GITHUB
+
+# Prince: streaming, detection, batch, Angular, CI, AWS compute
+/ingest-service/        @PRINCE_GITHUB
+/surveillance-engine/   @PRINCE_GITHUB
+/batch-jobs/            @PRINCE_GITHUB
+/web/                   @PRINCE_GITHUB
+/.github/workflows/     @PRINCE_GITHUB
+/infra/aws/compute/     @PRINCE_GITHUB
+
+# Sushant: simulator, case API + AI assistant, React, risk scorer, local infra, networking, docs
+/market-sim/            @SUSHANT_GITHUB
+/case-service/          @SUSHANT_GITHUB
+/admin/                 @SUSHANT_GITHUB
+/risk-scorer/           @SUSHANT_GITHUB
+/infra/docker-compose.yml @SUSHANT_GITHUB
+/infra/aws/network/     @SUSHANT_GITHUB
+/docs/                  @SUSHANT_GITHUB
+
+# Shared contract: both of you must agree on event schema changes
+/common/                @PRINCE_GITHUB @SUSHANT_GITHUB
+/infra/kafka/           @PRINCE_GITHUB @SUSHANT_GITHUB
