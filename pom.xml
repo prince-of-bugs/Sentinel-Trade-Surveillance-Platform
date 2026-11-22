@@ -24,10 +24,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <!-- Add each new service here as it is created (week 2: market-sim, ingest-service). -->
+    <!-- Add each new service here as it is created (week 2: market-sim). -->
     <modules>
         <module>common</module>
         <module>case-service</module>
+        <module>ingest-service</module>
     </modules>
 
     <dependencyManagement>

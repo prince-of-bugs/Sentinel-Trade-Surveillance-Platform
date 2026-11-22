@@ -40,7 +40,22 @@ mvn verify
 # 4. Run case-service (applies the Flyway migrations to Postgres)
 mvn -pl case-service spring-boot:run
 curl localhost:8083/actuator/health      # {"status":"UP",...}
+
+# 5. Run ingest-service (consumes trades.orders / trades.executions)
+mvn -pl ingest-service spring-boot:run
+curl localhost:8082/actuator/health
 ```
+
+Until market-sim lands you can feed ingest-service by hand from the Kafka container:
+
+```bash
+docker exec -it sentinel-kafka /opt/kafka/bin/kafka-console-producer.sh   --bootstrap-server localhost:9092 --topic trades.orders   --property parse.key=true --property key.separator='|'
+ACC-1|{"eventId":"evt-1","orderId":"ord-1","accountId":"ACC-1","symbol":"AAPL","side":"BUY","action":"NEW","price":190.25,"quantity":100,"occurredAt":"2026-11-21T14:30:00Z"}
+```
+
+The record shows up in Kafka UI on `trades.normalized` and in Mongo:
+`docker exec sentinel-mongo mongosh sentinel --quiet --eval 'db.raw_events.find().limit(5)'`.
+Send something that isn't valid JSON and it lands on `trades.dlt` instead, stored in Mongo as `REJECTED`.
 
 Stop with `docker compose -f infra/docker-compose.yml down` (add `-v` to wipe data).
 
@@ -53,8 +68,8 @@ Stop with `docker compose -f infra/docker-compose.yml down` (add `-v` to wipe da
 | `infra/docker-compose.yml` | Local stack | Sushant |
 | `infra/kafka/create-topics.sh` | Topic definitions | Both |
 | `.github/workflows/` | CI | Prince |
+| `ingest-service/` | Validation, normalization, raw-event store (Mongo), DLT | Prince |
 | `market-sim/` *(week 2)* | Multithreaded trade simulator | Sushant |
-| `ingest-service/` *(week 2)* | Validation, de-duplication, DLTs | Prince |
 | `surveillance-engine/` *(week 3)* | Rule engine | Prince |
 
 ## Ports
@@ -82,6 +97,10 @@ Stop with `docker compose -f infra/docker-compose.yml down` (add `-v` to wipe da
 | `trades.normalized` | accountId | 6 | ingest-service → surveillance-engine |
 | `alerts.raised` | alertId | 3 | surveillance-engine → case-service |
 | `trades.dlt`, `alerts.dlt` | original key | 1 | failed messages after retries |
+
+Payloads are JSON with the same field names as the records in `common/.../events`. Timestamps are
+ISO-8601 strings and enums are their names. Producers should set the `x-correlation-id` header;
+ingest-service starts one if it's missing and copies it onto everything downstream.
 
 To add a topic, update **both** `common/.../kafka/Topics.java` and `infra/kafka/create-topics.sh`.
 `TopicsTest` fails the build if they drift apart.

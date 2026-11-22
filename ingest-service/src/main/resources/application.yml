@@ -1,0 +1,45 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: ingest-service
+  kafka:
+    # Defaults match infra/docker-compose.yml; override with env vars in AWS.
+    bootstrap-servers: ${KAFKA_BOOTSTRAP:localhost:9092}
+    consumer:
+      group-id: ingest-service
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      # Read the payload as a plain string so bad JSON becomes a REJECTED record, not a crash in the
+      # deserializer, and so the raw bytes can be stored and sent to the DLT unchanged.
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      acks: all
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    listener:
+      # 12 input partitions (6 orders + 6 executions) spread over 3 consumer threads.
+      concurrency: 3
+  mongodb:
+    uri: ${MONGO_URI:mongodb://localhost:27017/sentinel}
+  data:
+    mongodb:
+      # Creates the raw_events indexes, including the 30-day TTL, on startup.
+      auto-index-creation: true
+
+logging:
+  structured:
+    format:
+      # JSON logs; the correlationId MDC entry is included on every line.
+      console: ecs
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
