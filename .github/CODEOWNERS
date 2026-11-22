@@ -1,28 +1,27 @@
 # Each path's owner is auto-requested for review on PRs that touch it.
-# Replace the two placeholders with your real GitHub usernames before pushing.
-#   PRINCE_GITHUB   -> Prince's username
-#   SUSHANT_GITHUB  -> Sushant's username
+#   @prince-of-bugs -> Prince
+#   @sgurung183     -> Sushant
 # Later rules win, so the catch-all goes first.
 
-*                       @PRINCE_GITHUB @SUSHANT_GITHUB
+*                       @prince-of-bugs @sgurung183
 
 # Prince: streaming, detection, batch, Angular, CI, AWS compute
-/ingest-service/        @PRINCE_GITHUB
-/surveillance-engine/   @PRINCE_GITHUB
-/batch-jobs/            @PRINCE_GITHUB
-/web/                   @PRINCE_GITHUB
-/.github/workflows/     @PRINCE_GITHUB
-/infra/aws/compute/     @PRINCE_GITHUB
+/ingest-service/        @prince-of-bugs
+/surveillance-engine/   @prince-of-bugs
+/batch-jobs/            @prince-of-bugs
+/web/                   @prince-of-bugs
+/.github/workflows/     @prince-of-bugs
+/infra/aws/compute/     @prince-of-bugs
 
 # Sushant: simulator, case API + AI assistant, React, risk scorer, local infra, networking, docs
-/market-sim/            @SUSHANT_GITHUB
-/case-service/          @SUSHANT_GITHUB
-/admin/                 @SUSHANT_GITHUB
-/risk-scorer/           @SUSHANT_GITHUB
-/infra/docker-compose.yml @SUSHANT_GITHUB
-/infra/aws/network/     @SUSHANT_GITHUB
-/docs/                  @SUSHANT_GITHUB
+/market-sim/            @sgurung183
+/case-service/          @sgurung183
+/admin/                 @sgurung183
+/risk-scorer/           @sgurung183
+/infra/docker-compose.yml @sgurung183
+/infra/aws/network/     @sgurung183
+/docs/                  @sgurung183
 
 # Shared contract: both of you must agree on event schema changes
-/common/                @PRINCE_GITHUB @SUSHANT_GITHUB
-/infra/kafka/           @PRINCE_GITHUB @SUSHANT_GITHUB
+/common/                @prince-of-bugs @sgurung183
+/infra/kafka/           @prince-of-bugs @sgurung183
